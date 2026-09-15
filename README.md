@@ -1,4 +1,4 @@
-# Web-Scrapper-Using-Python
+# Lead generator with auto emails sender and follow-ups
 
 # Playwright B2B Data Scraper Pipeline
 
