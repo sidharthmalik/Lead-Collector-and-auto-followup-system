@@ -14,8 +14,8 @@ from openpyxl.utils import get_column_letter
 # ═══════════════════════════════════════════════════════════════
 
 # ── 1. WHAT TO SCRAPE ─────────────────────────────────────────
-SEARCH_QUERY    = "dropshiping agency"
-SEARCH_LOCATION = "Los Angeles"
+SEARCH_QUERY    = "dentist"
+SEARCH_LOCATION = "Chandigarh"
 MAX_RESULTS     = 50
 
 # ── 2. WHICH SOURCES ──────────────────────────────────────────
