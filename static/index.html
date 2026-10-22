@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lead Console</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#efe8da;--text:#17130e;--muted:#7a7063;--glass:rgba(255,252,245,.5);--line:rgba(23,19,14,.18);--hi:rgba(255,255,255,.9);--acc:#ff4a1c;--a:#ff4a1c;--b:#d99a1e;--c:#7f9152;--d:#9a9082;--grain:.09;--blob:.4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12100c;--text:#f0e9da;--muted:#9b917f;--glass:rgba(255,245,225,.06);--line:rgba(240,233,218,.18);--hi:rgba(255,240,215,.4);--acc:#ff5a2b;--a:#ff5a2b;--b:#e8ad3a;--c:#9bae6c;--d:#8c8272;--grain:.12;--blob:.3;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12100c;--text:#f0e9da;--muted:#9b917f;--glass:rgba(255,245,225,.06);--line:rgba(240,233,218,.18);--hi:rgba(255,240,215,.4);--acc:#ff5a2b;--a:#ff5a2b;--b:#e8ad3a;--c:#9bae6c;--d:#8c8272;--grain:.12;--blob:.3;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.55 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;z-index:5;pointer-events:none;opacity:var(--grain);mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(110px);opacity:var(--blob);animation:drift 26s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:42vmax;height:42vmax;background:var(--acc);top:-14vmax;right:-10vmax}
+.bg i:nth-child(2){width:34vmax;height:34vmax;background:var(--b);bottom:-12vmax;left:-8vmax;animation-delay:-11s}
+@keyframes drift{to{transform:translate(-5vmax,5vmax) scale(1.2)}}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:22px 24px 90px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.mark{font:500 12px "DM Mono",ui-monospace,monospace;letter-spacing:2.4px;text-transform:uppercase}
+.mark b{color:var(--acc)}
+.tabs{position:relative;display:flex;padding:5px;border-radius:999px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(20px) saturate(1.7);-webkit-backdrop-filter:blur(20px) saturate(1.7);box-shadow:inset 0 1.5px 0 var(--hi),0 10px 30px rgba(0,0,0,.08)}
+.tabs button{position:relative;z-index:1;border:0;background:none;color:var(--muted);font:500 13px "DM Mono",ui-monospace,monospace;letter-spacing:1px;text-transform:uppercase;padding:10px 20px;border-radius:999px;cursor:pointer;transition:color .3s}
+.tabs button.on{color:#1a0f08}
+.pill{position:absolute;z-index:0;top:5px;bottom:5px;border-radius:999px;background:linear-gradient(160deg,color-mix(in srgb,var(--acc) 70%,#fff),var(--acc) 60%);box-shadow:inset 0 2px 0 rgba(255,255,255,.65),inset 0 -8px 14px rgba(0,0,0,.12),0 8px 22px color-mix(in srgb,var(--acc) 40%,transparent);transition:left .6s cubic-bezier(.34,1.4,.5,1),width .6s cubic-bezier(.34,1.4,.5,1)}
+.mq{overflow:hidden;margin:28px 0 6px;border-block:1px solid var(--line)}
+.mq div{display:flex;gap:44px;width:max-content;padding:13px 0;animation:mq 50s linear infinite;font:400 12px "DM Mono",ui-monospace,monospace;letter-spacing:2.2px;text-transform:uppercase;color:var(--muted)}
+.mq span::after{content:"✦";margin-left:44px;color:var(--acc)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.hero{font:400 clamp(58px,12.5vw,176px)/.88 "Instrument Serif",Georgia,serif;letter-spacing:-.04em;margin:44px 0 22px}
+.ln{display:block;overflow:hidden;padding:.04em .06em .1em;margin:0 -.06em}
+.ln>span{display:block;animation:up 1.1s cubic-bezier(.2,.85,.2,1) both}.ln:nth-child(2)>span{animation-delay:.14s}
+@keyframes up{from{transform:translateY(108%)}}
+em{font-style:italic;color:var(--acc)}
+.lede{max-width:48ch;color:var(--muted);margin:0 0 46px;font-size:17px;animation:rise .9s .3s both}
+section{display:none}section.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:30px;padding:30px;margin-bottom:18px;backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);box-shadow:inset 0 1.5px 0 var(--hi),0 24px 60px rgba(0,0,0,.08);animation:rise .8s both}
+h2{margin:0 0 24px;font:500 12px "DM Mono",ui-monospace,monospace;letter-spacing:2.2px;text-transform:uppercase;color:var(--muted)}
+h2 b{color:var(--acc);font-weight:500;margin-right:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:26px}
+label.f{display:block;font:400 11px "DM Mono",ui-monospace,monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+input[type=text],input[type=number],select{width:100%;padding:8px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:var(--text);font:400 24px "Instrument Serif",Georgia,serif;transition:border-color .3s,padding .3s}
+select option{color:#17130e;font-size:16px}
+input:focus,select:focus{outline:0;border-bottom-color:var(--acc);padding-left:8px}
+#search{font:400 16px "Instrument Sans",system-ui,sans-serif;padding:9px 16px;border:1px solid var(--line);border-radius:999px}
+#search:focus{padding-left:20px}
+details{margin-top:26px}summary{cursor:pointer;font:400 12px "DM Mono",ui-monospace,monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);list-style:none;transition:color .2s}summary:hover{color:var(--acc)}summary::after{content:"  +"}details[open] summary::after{content:"  −"}
+details>div{margin-top:20px;animation:rise .5s both}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;padding:8px 16px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none;border:1px solid var(--line);background:var(--glass);transition:transform .4s cubic-bezier(.34,1.7,.5,1),background .25s,border-color .25s,color .25s}
+.chip:hover{transform:translateY(-2px)}.chip:active{transform:scale(.9)}
+.chip.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 16%,transparent);color:var(--text)}
+.chip input{display:none}
+.btn{--mx:50%;--my:0%;position:relative;overflow:hidden;isolation:isolate;border:1px solid var(--line);border-radius:999px;padding:14px 30px;font:500 13px "DM Mono",ui-monospace,monospace;letter-spacing:1.4px;text-transform:uppercase;color:var(--text);cursor:pointer;background:linear-gradient(160deg,color-mix(in srgb,var(--hi) 55%,transparent),color-mix(in srgb,var(--hi) 8%,transparent));backdrop-filter:blur(16px) saturate(1.8);-webkit-backdrop-filter:blur(16px) saturate(1.8);box-shadow:inset 0 2px 0 var(--hi),inset 0 -12px 20px color-mix(in srgb,var(--acc) 10%,transparent),0 12px 30px rgba(0,0,0,.14);transition:transform .5s cubic-bezier(.34,1.7,.5,1),box-shadow .35s,border-radius .5s}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(130px circle at var(--mx) var(--my),color-mix(in srgb,var(--hi) 85%,transparent),transparent 70%);opacity:0;transition:opacity .3s}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;z-index:-1;background:linear-gradient(100deg,transparent,color-mix(in srgb,var(--hi) 65%,transparent),transparent);transform:skewX(-20deg);transition:left .9s cubic-bezier(.2,.8,.2,1)}
+.btn:hover{transform:translateY(-3px) scale(1.05);border-radius:30px 42px 32px 44px/38px 30px 42px 32px}
+.btn:hover::before{opacity:1}.btn:hover::after{left:130%}
+.btn:active{transform:scale(.93,.88);transition-duration:.15s}
+.btn.pri{border-color:transparent;color:#1a0f08;background:linear-gradient(160deg,color-mix(in srgb,var(--acc) 65%,#fff),var(--acc) 58%,color-mix(in srgb,var(--acc) 82%,#000));box-shadow:inset 0 2.5px 0 rgba(255,255,255,.7),inset 0 -14px 22px rgba(0,0,0,.14),0 16px 38px color-mix(in srgb,var(--acc) 40%,transparent)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+pre{margin:0;padding:22px;border-radius:20px;background:color-mix(in srgb,var(--bg) 60%,transparent);border:1px solid var(--line);overflow-x:auto;font:400 12px/1.7 "DM Mono",ui-monospace,Menlo,Consolas,monospace;max-height:340px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:26px}
+.stat{padding:16px 6px 12px;border-top:1px solid var(--line);animation:rise .8s both;animation-delay:calc(var(--i)*90ms)}
+.stat b{display:block;font:400 clamp(48px,7vw,84px)/1 "Instrument Serif",Georgia,serif;letter-spacing:-.03em}
+.stat small{font:400 11px "DM Mono",ui-monospace,monospace;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font:400 11px "DM Mono",ui-monospace,monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);padding:6px 14px 14px 0;cursor:pointer;white-space:nowrap;transition:color .2s}th:hover{color:var(--acc)}
+td{padding:16px 14px 16px 0;border-top:1px solid var(--line);vertical-align:middle}
+tbody tr{animation:rise .6s both;animation-delay:calc(var(--i)*35ms)}
+tbody tr:hover td{background:var(--glass)}
+.g{display:inline-block;min-width:34px;font:italic 400 44px/1 "Instrument Serif",Georgia,serif;text-shadow:0 0 28px currentColor}
+.gA{color:var(--a)}.gB{color:var(--b)}.gC{color:var(--c)}.gD{color:var(--d);text-shadow:none}
+.bar{display:inline-block;vertical-align:middle;width:60px;height:3px;border-radius:2px;background:var(--line);margin-left:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+.muted{color:var(--muted)}code{font:400 13px "DM Mono",ui-monospace,monospace}
+.empty{padding:60px 10px;text-align:center;color:var(--muted);font:italic 400 24px "Instrument Serif",Georgia,serif}
+.badge{display:inline-block;padding:6px 16px;border-radius:999px;font:500 11px "DM Mono",ui-monospace,monospace;letter-spacing:1.6px;border:1px solid var(--line)}
+.dry{color:var(--c)}.live{color:var(--a)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px}
+.pick{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-radius:20px;cursor:pointer;transition:background .25s,transform .4s cubic-bezier(.34,1.6,.5,1)}
+.pick .g{font-size:34px}
+.pick:hover{background:var(--glass);transform:translateX(6px)}.pick.on{background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.mail{white-space:pre-wrap;padding:26px;border-radius:20px;background:color-mix(in srgb,var(--bg) 55%,transparent);border:1px solid var(--line);font:400 19px/1.5 "Instrument Serif",Georgia,serif;animation:rise .5s both}
+.note{font-size:12px;color:var(--muted);margin:14px 0 0}
+@media (max-width:760px){.split{grid-template-columns:1fr}.glass{padding:22px;border-radius:24px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i></div>
+<div class="wrap">
+<header>
+  <div class="mark">Lead <b>/</b> Console</div>
+  <div class="tabs" id="tabs"><span class="pill" id="pill"></span>
+    <button data-t="setup" class="on">01 Setup</button><button data-t="leads">02 Leads</button><button data-t="campaign">03 Campaign</button>
+  </div>
+</header>
+<div class="mq"><div id="mq"></div></div>
+
+<section id="setup" class="on">
+  <h1 class="hero" style="font-weight:400"><span class="ln"><span>Find the leads</span></span><span class="ln"><span><em>worth writing to.</em></span></span></h1>
+  <p class="lede">Set a target, run the pipeline, review the scored shortlist, preview the outreach. Nothing is sent unless you turn off dry run.</p>
+  <div class="glass"><h2><b>01</b>Target</h2>
+    <div class="grid">
+      <div><label class="f">Search</label><input type="text" id="q" value="dropshipping agency"></div>
+      <div><label class="f">Location</label><input type="text" id="loc" value="Los Angeles"></div>
+      <div><label class="f">Max results</label><input type="number" id="max" value="50" min="1"></div>
+    </div>
+    <div class="chips" id="sources" style="margin-top:26px"></div>
+  </div>
+  <div class="glass"><h2><b>02</b>Outreach</h2>
+    <div class="grid">
+      <div><label class="f">Minimum grade</label><select id="mg"><option>A</option><option selected>B</option><option>C</option></select></div>
+      <div><label class="f">Daily limit</label><input type="number" id="dl" value="20" min="1"></div>
+    </div>
+    <div class="chips" style="margin-top:26px">
+      <label class="chip on"><input type="checkbox" id="dry" checked>Dry run</label>
+      <label class="chip on"><input type="checkbox" id="show" checked>Show browser</label>
+    </div>
+    <details><summary>Your details</summary><div class="grid">
+      <div><label class="f">Name</label><input type="text" id="yn" value="Sidharth Malik"></div>
+      <div><label class="f">Company</label><input type="text" id="yc" value="Your Agency Name"></div>
+      <div><label class="f">Website</label><input type="text" id="yw" value="https://yourwebsite.com"></div>
+      <div style="grid-column:1/-1"><label class="f">Service pitch</label><input type="text" id="ys" value="help businesses grow with AI-powered marketing automation"></div>
+    </div></details>
+  </div>
+  <div class="glass"><h2><b>03</b>Run</h2>
+    <div class="row"><button class="btn pri" id="run">Run pipeline</button><span class="badge" id="runstate">Idle</span></div>
+    <pre class="logview" id="runlog" style="margin-top:22px;min-height:120px">Logs appear here once you run.</pre>
+    <p class="note">Scrapes, scores and exports to your Desktop. Keys are read from your .env file on the server, never from this page.</p>
+  </div>
+</section>
+
+<section id="leads">
+  <h1 class="hero" style="font-weight:400"><span class="ln"><span>The</span></span><span class="ln"><span><em>shortlist.</em></span></span></h1>
+  <p class="lede">Every scraped business, graded by your model. Sort, filter, export.</p>
+  <div class="glass"><div class="row">
+    <input type="file" id="file" accept=".csv" hidden>
+    <button class="btn pri" onclick="file.click()">Load scored CSV</button>
+    <button class="btn" id="sample">Sample data</button>
+    <span class="muted" id="src">Nothing loaded</span>
+    <button class="btn" id="export" style="margin-left:auto">Export</button>
+  </div></div>
+  <div id="leadbody"><div class="glass empty">Load the _SCORED.csv from your Desktop, or try the sample data.</div></div>
+</section>
+
+<section id="campaign">
+  <h1 class="hero" style="font-weight:400"><span class="ln"><span>Say</span></span><span class="ln"><span><em>hello, politely.</em></span></span></h1>
+  <p class="lede">Who qualifies today, and exactly what they’d receive.</p>
+  <div id="campbody"></div>
+</section>
+</div>
+
+<script>
+const SOURCES=["Google Maps","JustDial","IndiaMART"],KEYS=["google_maps","justdial","indiamart"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let leads=[],gf=new Set(["A","B","C","D"]),sk="ml_score",sd=-1,pi=0;
+
+/* tabs with sliding liquid pill */
+function movePill(){const b=document.querySelector(".tabs button.on"),p=$("pill");p.style.left=b.offsetLeft+"px";p.style.width=b.offsetWidth+"px"}
+$("tabs").onclick=e=>{const t=e.target.dataset?.t;if(!t)return;
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b===e.target));movePill();
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===t));
+  if(t==="campaign")renderCampaign();if(t==="leads")renderTable()};
+addEventListener("resize",movePill);document.fonts?.ready.then(movePill);
+requestAnimationFrame(movePill);
+
+/* buttons follow the pointer like light on liquid glass */
+document.addEventListener("pointermove",e=>{const b=e.target.closest?.(".btn");if(!b)return;const r=b.getBoundingClientRect();b.style.setProperty("--mx",(e.clientX-r.left)+"px");b.style.setProperty("--my",(e.clientY-r.top)+"px")});
+document.addEventListener("change",e=>{const c=e.target.closest?.(".chip");if(c&&e.target.type==="checkbox")c.classList.toggle("on",e.target.checked)});
+
+SOURCES.forEach(s=>{const l=document.createElement("label");l.className="chip on";l.innerHTML=`<input type="checkbox" checked>${s}`;$("sources").appendChild(l)});
+
+/* ── API ── */
+async function api(path,body){const r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(typeof j.detail==="string"?j.detail:"Check your settings and try again.");return j}
+let since=0,polling=false;
+function clearLogs(){since=0;document.querySelectorAll(".logview").forEach(p=>p.textContent="")}
+function setState(s){const e=$("runstate");if(e){e.textContent={idle:"Idle",running:"Running…",done:"Finished",error:"Failed"}[s]||s;e.className="badge "+(s==="running"?"dry":s==="error"?"live":"")}}
+async function poll(){
+  if(polling)return;polling=true;
+  try{for(;;){const r=await(await fetch("/api/status?since="+since)).json();since=r.next;
+    if(r.lines.length)document.querySelectorAll(".logview").forEach(p=>{p.textContent+=r.lines.join("\n")+"\n";p.scrollTop=p.scrollHeight});
+    setState(r.status);if(r.status!=="running"){if(r.status==="done")await refreshLeads();break}
+    await new Promise(x=>setTimeout(x,1200))}}
+  catch(e){setState("error")}polling=false}
+async function refreshLeads(){try{const rows=await(await fetch("/api/leads")).json();if(rows.length)load(rows,"Latest run");}catch(e){}}
+$("run").onclick=async()=>{
+  const sources=[...$("sources").children].map((c,i)=>c.firstChild.checked?KEYS[i]:null).filter(Boolean);
+  if(!sources.length){alert("Pick at least one source.");return}
+  try{clearLogs();await api("/api/run",{query:$("q").value.trim(),location:$("loc").value.trim(),max_results:+$("max").value||50,sources,show_browser:$("show").checked});setState("running");poll()}
+  catch(e){alert(e.message)}};
+async function runCampaign(){
+  const dry=$("dry").checked;
+  if(!dry&&!confirm("This will send real emails to the leads in the queue. Continue?"))return;
+  try{clearLogs();await api("/api/campaign",{min_grade:$("mg").value,daily_limit:+$("dl").value||20,dry_run:dry,confirm_live:!dry,name:$("yn").value,company:$("yc").value,service:$("ys").value,website:$("yw").value});setState("running");poll()}
+  catch(e){alert(e.message)}}
+
+/* CSV */
+function parseCSV(t){const rows=[];let r=[],f="",q=false;t=t.replace(/^\uFEFF/,"");
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c=='"')q=true;else if(c==","){r.push(f);f=""}
+    else if(c=="\n"||c=="\r"){if(c=="\r"&&t[i+1]=="\n")i++;r.push(f);f="";if(r.length>1||r[0])rows.push(r);r=[]}
+    else f+=c}
+  if(f||r.length){r.push(f);rows.push(r)}
+  const h=rows.shift().map(x=>x.trim());return rows.map(x=>Object.fromEntries(h.map((k,i)=>[k,x[i]??""])))}
+const toCSV=rows=>{if(!rows.length)return"";const h=Object.keys(rows[0]);return[h.join(","),...rows.map(r=>h.map(k=>`"${String(r[k]??"").replace(/"/g,'""')}"`).join(","))].join("\n")};
+const normalise=rows=>rows.map(r=>({...r,ml_score:parseFloat(r.ml_score)||0,ml_grade:(r.ml_grade||"D").trim().toUpperCase(),email:(r.email||"N/A").trim()||"N/A",business_name:r.business_name||"(unnamed)"}));
+function load(rows,label){leads=normalise(rows);$("src").textContent=`${label} · ${leads.length} leads`;renderLeads()}
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const rows=parseCSV(t);
+  if(!rows.length||!("ml_grade" in rows[0]))alert("This needs ml_grade and ml_score columns, so use the _SCORED.csv from the pipeline.");else load(rows,f.name)}catch(x){alert("Couldn’t read that file.")}})};
+$("sample").onclick=()=>{
+  const n=[["Pacific Fulfilment Co","Los Angeles, CA","Ecommerce service",4.8,"Google Maps"],["Brightcart Studio","Santa Monica, CA","Marketing agency",4.6,"Clutch"],["Harbor Dropship Group","Long Beach, CA","Dropshipping",4.4,"Yelp"],["Nova Commerce Labs","Pasadena, CA","Ecommerce agency",4.9,"Clutch"],["Sunset Supply Partners","Los Angeles, CA","Wholesale",3.9,"YellowPages"],["Orbit Merchants","Glendale, CA","Ecommerce service",4.2,"Google Maps"],["Cedar & Pine Retail","Burbank, CA","Retail consulting",3.5,"Manta"],["Delta Parcel Works","Torrance, CA","Logistics",3.1,"BBB"],["Lumen Growth Agency","Los Angeles, CA","Marketing agency",4.7,"Clutch"],["Quickship Direct","Anaheim, CA","Dropshipping",3.8,"Bark"],["Redwood Market Co","Irvine, CA","Ecommerce service",2.9,"Trustpilot"],["Atlas Online Retail","Van Nuys, CA","Retail",2.4,"HotFrog"]];
+  const sc=[91,84,78,88,63,71,52,41,86,66,38,27];
+  load(n.map((x,i)=>{const s=sc[i],slug=x[0].toLowerCase().replace(/[^a-z]/g,"");return{ml_grade:s>=80?"A":s>=65?"B":s>=45?"C":"D",ml_score:s,business_name:x[0],email:i%4===3?"N/A":`hello@${slug}.com`,phone:`+1 310 555 01${i+10}`,address:x[1],website:`https://${slug}.com`,category:x[2],rating:x[3],source:x[4]}}),"Sample data")};
+
+/* count-up numbers */
+function countUp(el,to){const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/800),e=1-Math.pow(1-k,3);el.textContent=Math.round(to*e);if(k<1)requestAnimationFrame(f)})(t0)}
+function filtered(){const s=($("search")?.value||"").toLowerCase(),eo=$("eonly")?.checked;
+  return leads.filter(l=>gf.has(l.ml_grade)&&(!eo||l.email!=="N/A")&&(!s||[l.business_name,l.category,l.address,l.source].join(" ").toLowerCase().includes(s)))
+  .sort((a,b)=>{const x=a[sk],y=b[sk];return(typeof x==="number"&&typeof y==="number"?x-y:String(x).localeCompare(String(y)))*sd})}
+function renderLeads(){
+  const cnt=g=>leads.filter(l=>l.ml_grade===g).length,wE=leads.filter(l=>l.email!=="N/A").length;
+  const st=[["Total",leads.length,""],["A",cnt("A"),"--a"],["B",cnt("B"),"--b"],["C",cnt("C"),"--c"],["D",cnt("D"),"--d"],["With email",wE,""]];
+  $("leadbody").innerHTML=`<div class="stats">${st.map((s,i)=>`<div class="stat" style="--i:${i}"><b data-n="${s[1]}" ${s[2]?`style="color:var(${s[2]})"`:""}>0</b><small>${s[0].length===1?"Grade "+s[0]:s[0]}</small></div>`).join("")}</div>
+  <div class="glass"><div class="row" style="margin-bottom:14px">
+  ${["A","B","C","D"].map(g=>`<label class="chip ${gf.has(g)?"on":""}"><input type="checkbox" data-g="${g}" ${gf.has(g)?"checked":""}>${g}</label>`).join("")}
+  <label class="chip"><input type="checkbox" id="eonly">Has email</label>
+  <input type="text" id="search" placeholder="Search…" style="max-width:240px;margin-left:auto"></div><div class="tw" id="tbl"></div></div>`;
+  $("leadbody").querySelectorAll(".stat b").forEach(b=>countUp(b,+b.dataset.n));
+  $("leadbody").querySelectorAll("[data-g]").forEach(i=>i.addEventListener("change",e=>{const g=e.target.dataset.g;e.target.checked?gf.add(g):gf.delete(g);renderTable()}));
+  $("eonly").onchange=renderTable;$("search").oninput=renderTable;renderTable()}
+function renderTable(){if(!$("tbl"))return;const rows=filtered();
+  const cols=[["ml_grade","Grade"],["ml_score","Score"],["business_name","Business"],["category","Category"],["email","Email"],["address","Location"],["source","Source"]];
+  $("tbl").innerHTML=rows.length?`<table><thead><tr>${cols.map(([k,l])=>`<th data-k="${k}">${l}${sk===k?(sd>0?" ↑":" ↓"):""}</th>`).join("")}</tr></thead><tbody>${rows.map((l,i)=>`<tr style="--i:${Math.min(i,18)}">
+  <td><span class="g g${l.ml_grade}">${esc(l.ml_grade)}</span></td>
+  <td>${l.ml_score}<span class="bar"><i style="width:${Math.min(100,l.ml_score)}%"></i></span></td>
+  <td><b style="font-weight:500">${esc(l.business_name)}</b><br><span class="muted">${esc(l.website)}</span></td>
+  <td>${esc(l.category)}</td><td>${l.email==="N/A"?'<span class="muted">—</span>':esc(l.email)}</td><td>${esc(l.address)}</td><td>${esc(l.source)}</td></tr>`).join("")}</tbody></table>`:`<div class="empty">No leads match.</div>`;
+  $("tbl").querySelectorAll("th").forEach(th=>th.onclick=()=>{const k=th.dataset.k;sd=sk===k?-sd:-1;sk=k;renderTable()})}
+$("export").onclick=()=>{const r=filtered();if(!r.length)return;const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([toCSV(r)],{type:"text/csv"}));a.download="leads_filtered.csv";a.click()};
+
+/* campaign */
+function renderCampaign(){
+  if(!leads.length){$("campbody").innerHTML=`<div class="glass empty">Load leads first to preview the campaign.</div>`;return}
+  const o={A:0,B:1,C:2,D:3},min=o[$("mg").value],lim=+$("dl").value||20,dry=$("dry").checked;
+  const el=leads.filter(l=>o[l.ml_grade]<=min),we=el.filter(l=>l.email!=="N/A"),b=we.slice(0,lim);
+  if(pi>=b.length)pi=0;const l=b[pi];
+  const st=[["Scored",leads.length],["Eligible",el.length],["Have email",we.length],["Today’s run",b.length]];
+  $("campbody").innerHTML=`<div class="stats">${st.map((s,i)=>`<div class="stat" style="--i:${i}"><b data-n="${s[1]}">0</b><small>${s[0]}</small></div>`).join("")}</div>
+  <div class="glass"><div class="row"><span class="badge ${dry?"dry":"live"}">${dry?"DRY RUN · nothing is sent":"LIVE SEND"}</span>
+  <span class="muted">Grade ${$("mg").value}+ · ${lim} per run · 45–90s between sends</span><button class="btn pri" id="crun" style="margin-left:auto">${dry?"Run dry run":"Send emails"}</button></div><pre class="logview" id="camplog" style="margin-top:18px;min-height:60px"></pre></div>
+  ${b.length?`<div class="split"><div class="glass" style="padding:12px">${b.map((x,i)=>`<div class="pick ${i===pi?"on":""}" data-i="${i}"><span>${esc(x.business_name)}<br><span class="muted" style="font-size:12px">${esc(x.email)}</span></span><span class="g g${x.ml_grade}">${esc(x.ml_grade)}</span></div>`).join("")}</div>
+  <div class="glass"><h2>Preview</h2><div class="muted" style="margin-bottom:6px">To ${esc(l.email)}</div><div style="margin-bottom:12px">Quick idea for ${esc(l.business_name)}</div><div class="mail" id="mail"></div>
+  <p class="note">Fallback template shown. Live runs have Claude write each email.</p></div></div>`:`<div class="glass empty">No leads qualify. Lower the minimum grade, or enrich with Hunter.io.</div>`}`;
+  if(l){const city=(l.address||"").split(",").pop().trim()||"your area";$("mail").textContent=`Hi,\n\nI came across ${l.business_name} and was genuinely impressed. Businesses like yours in ${city} are exactly who we love working with.\n\nAt ${$("yc").value}, we help ${$("ys").value}. I think there’s a real opportunity here worth a 10-minute conversation.\n\nWould you be open to a quick call this week?\n\nBest,\n${$("yn").value}`}
+  $("campbody").querySelectorAll(".stat b").forEach(x=>countUp(x,+x.dataset.n));
+  $("crun").onclick=runCampaign;
+  $("campbody").querySelectorAll(".pick").forEach(p=>p.onclick=()=>{pi=+p.dataset.i;renderCampaign()})}
+$("mq").innerHTML=[...SOURCES,...SOURCES].map(s=>`<span>${s}</span>`).join("");
+refreshLeads();
+poll();
+</script>
+</body>
+</html>
